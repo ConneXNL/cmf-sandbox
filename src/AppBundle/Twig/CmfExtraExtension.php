@@ -45,11 +45,19 @@ class CmfExtraExtension extends \Twig_Extension
         );
     }
 
-    public function findCurrentPublishedCMFContent($contentNames){
-        if (!is_array($contentNames)) $contentNames = array($contentNames);
+    /**
+    * Example usage: {% set cmfMainContent = cmf_find_current_published_content(['acme_message/inbox', 'acme_message']) %}
+    * This example will try to find a content at /cms/content/acme_message/inbox, update the SEO Meta data and stores
+    * the content document in the cmfMainContent variable. Using 
+    *     {% block html_title %}{{ sonata_seo_title() }}{% endblock html_title %}
+    *     {% block html_metadatas %}{{ sonata_seo_metadatas() }}{% endblock html_metadatas %}
+    * in a parent will apply the seo meta data from the page.
+    * */
+    public function findCurrentPublishedCMFContent($optionalContentNames){
+        if (!is_array($optionalContentNames)) $optionalContentNames = array($optionalContentNames);
         $match = null;
 
-        foreach ($contentNames as $contentName){
+        foreach ($optionalContentNames as $contentName){
             $contentPath = substr($contentName, 0, 1) !== '/' ? $this->defaultContentPath."/".$contentName : $contentName;
             $content = $this->helper->find($contentPath);
             if ($content && $this->helper->isPublished($content)){
